@@ -4,87 +4,18 @@
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body ng-app="AngularATM" ng-controller="MainCtrl">
+    <div ng-switch on="loginData"> 
+      <div ng-switch-when="false" ng-include="'login'"></div>
+      <div ng-switch-when="true" ng-include="'logout'"></div>
+   </div>
 
-<h2>GitHub Fetcher</h2>
-<form class="repo-fetcher">
-  <h3>Enter a GitHub username to fetch:</h3>
-  <input type="text" class="ghusername" name="username" />
+  <script type="text/ng-template" id="login">
+    <button ng-click="login()">Login</button>
+  </script>
 
-  <button id="submitbtn" type="submit">Fetch User's Repos</button><br>
-  <h3>Or click to get the top repos on github Right Now:</h3>
-  <button id="topRepos" type="submit">Top Repos on Github</button><br>
-</form>
-
-<table class="top-repos"></table>
-
-<script src="https://code.jquery.com/jquery-2.2.0.js"></script>
-<script>
-$(document).ready(function() { 
-    generatelist();
-});
-
-
-function generatelist () {$.ajax ({
-        url: "/repos", //issue get to repos
-        type: "GET",
-        success: function(data) {
-          console.log(data)
-                $('.top-repos').append(data); //just stick the data on the DOM
-        }
-    })}
-
-$('#topRepos').on('click', function(e){
-  e.preventDefault();
-  var responsedata = [];
-  var $body = $('.top-repos');
-  $.get('https://api.github.com/search/repositories?q=stars:%3E30000', function(repos) {
-    console.log("HERE ARE THE TOP REPOS", repos.items)
-    $body.empty();
-    var res = repos.items
-    for (var i = 0; i < 25; i ++) {
-      responsedata[i] = {username: res[i].owner.login, reponame: res[i].name, stargazers: res[i].stargazers_count, url: res[i].html_url}      
-      var $repoForBody = `<ul>
-                 <li><strong>Repository: </strong><a href="${res[i].html_url}">"${res[i].name}"</a></li>
-                 <li><i>Username: </i>"${res[i].owner.login}"</li>
-                 <li>Stargazers: "${res[i].stargazers_count}"</li>
-               </ul>`
-      $( $repoForBody ).appendTo($body);
-    }
-  });
-});
-
-$('#submitbtn').on('click', function (e){
-  e.preventDefault();
-  var username = $('.ghusername').val();
-  var responsedata = [];
-  var $body = $('.top-repos');
-  $.get('https://api.github.com/users/' + username + '/repos', username, function (res) {
-    console.log("I AM THE RES!", res)
-    $body.empty();
-
-    res = res.sort(function compareNumbers(a, b) {
-      return b.stargazers_count - a.stargazers_count;
-    });
-
-
-    for (var i = 0; i < res.length; i ++) {
-      responsedata[i] = {username: username, reponame: res[i].name, stargazers: res[i].stargazers_count, url: res[i].html_url}      
-      var $repoForBody = `<ul>
-                 <li><strong>Repository: </strong><a href="${res[i].html_url}">"${res[i].name}"</a></li>
-                 <li><i>Username: </i>"${username}"</li>
-                 <li>Stargazers: "${res[i].stargazers_count}"</li>
-               </ul>`
-      $($repoForBody).appendTo($body);
-    }
-    console.log("THIS IS THE responsedata", responsedata)
-    $.post("/repos/import", responsedata, function () {
-       console.log("posted!")});
-  });
-});
-
-
-</script>
- 
+  <script type="text/ng-template" id="logout">
+    <button ng-click="logout()">Logout</button>
+  </script>
     
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script> <!-- Used for rendering bold tags in job search results -->
