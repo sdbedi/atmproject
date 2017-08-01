@@ -1,25 +1,39 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const app = express();
+module.exports = app;
 
 
 const mongoose = require('mongoose');
-require('./models/Searches');
+require('../models/Accounts');
 
 mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/news');
 
-// let Account = mongoose.model('Account');
+let Account = mongoose.model('Account');
 
+[{PIN: 1234, Balance: 100}, {PIN: 4321}].forEach((entry)=>{var newAccount = new Account(entry);
+console.log("newAccount: ", newAccount)
+  newAccount.save(function (err, entry) {
+    if (err) {
+      return console.error(err);
+    } else {console.log(entry)}
+  });
+})
 
-const app = express();
-module.exports = app;
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.use(express.static('client'))
+app.use(express.static('client'));
 
+app.get('/accounts', function(req, res, next) { //route for getting all accounts - not linked to frontend, but can be accessed via cUrl
+  Account.find(function(err, accounts){
+    if(err){ return next(err); }
 
+    res.json(accounts);
+  });
+});
 
 app.get('/login/:pin', function(req, res, next) {
     // let search = new Account(req.params);
