@@ -1,22 +1,40 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
 
 
-var app = express();
+const mongoose = require('mongoose');
+require('./models/Searches');
+
+mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/news');
+
+// let Account = mongoose.model('Account');
+
+
+const app = express();
 module.exports = app;
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+app.use(express.static('client'))
 
-var knex = require('knex')({
-  client: 'sqlite3',
-  connection: {
-    filename: './github-fetcher.sqlite3'
-  }
+
+
+app.get('/login/:pin', function(req, res, next) {
+    // let search = new Account(req.params);
+    // console.log("search", search);
+    // search.save(function(err, search){
+    //   if(err){ return next(err); }
+    //   //res.json(search);
+    // });
+    let objForStorage = req.params;
+    objForStorage.balance = 10;
+    console.log(req.params)
+    res.json("hi")
 });
 
+//app.pos
 
 app.post('/repos/import', function (req, res) {
   for (var key in req.body) {
