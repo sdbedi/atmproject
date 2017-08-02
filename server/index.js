@@ -2,10 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
-//const findOrCreate = require('mongoose-findorcreate')
-const findOrCreate = require('mongoose-find-or-create'); //mtimofiiv
 module.exports = app;
-
 
 const mongoose = require('mongoose');
 require('../models/Accounts');
@@ -13,18 +10,19 @@ require('../models/Accounts');
 mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/news');
 
 let Account = mongoose.model('Account');
-//console.log(Account.findOrCreate)
 
 Account.remove({}, function(err) {  //wipe DB on startup
-   console.log('account removed on startup') 
+   console.log('account removed on startup'); 
 });
 
 [{_id: 1234, Balance: 100}, {_id: 4321}].forEach((entry)=>{var newAccount = new Account(entry); //pre load some dummy data
-console.log("newAccount: ", newAccount)
+console.log("newAccount: ", newAccount);
   newAccount.save(function (err, entry) {
     if (err) {
       return console.error(err);
-    } else {console.log(entry)}
+    } else {
+      console.log(entry);
+    }
   });
 })
 
@@ -36,30 +34,30 @@ app.use(express.static('client'));
 
 app.get('/accounts', function(req, res, next) { //route for getting all accounts - not linked to frontend, but can be accessed via cUrl
   Account.find(function(err, accounts){
-    if(err){ return next(err); }
-
+    if(err){ 
+      return next(err); 
+    };
     res.json(accounts);
   });
 });
 
 app.get('/login/:_id', function(req, res, next) {
-    let acctForStorage = req.params;
-    console.log("params", req.params)
+  let acctForStorage = req.params;
+  console.log("params", req.params);
   Account.findOrCreate(acctForStorage, (err, result) => {
-  // my new or existing model is loaded as result
-    console.log(result) 
-    res.json(result)
+    console.log("result: ", result); 
+    res.json(result);
   })
 });
 
 app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one route to handles credits and withdrawals
-  console.log("transaction params", req.params)
+  console.log("transaction params", req.params);
   let transactionForStorage = req.params;
-  transactionForStorage.amount = Number(transactionForStorage.amount)
+  transactionForStorage.amount = Number(transactionForStorage.amount);
   if (transactionForStorage.type === "withdraw") {
-    transactionForStorage.amount = transactionForStorage.amount * (-1)
+    transactionForStorage.amount = transactionForStorage.amount * (-1);
   }
-  console.log("transaction: ", transactionForStorage)
+  console.log("transaction: ", transactionForStorage);
   Account.findById({_id: req.params.PIN}, function (err, acct) {
     if (err) {console.log(err)};
   
@@ -72,9 +70,9 @@ app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one rout
     acct.save(function (err, updatedAcct) {
       if (err) {console.log(err)};
 
-      console.log("updated acct: ", updatedAcct)
-      let objForReturn = {Balance: updatedAcct.Balance, Amount: Math.abs(transactionForStorage.amount)}
-      console.log(objForReturn)
+      console.log("updated acct: ", updatedAcct);
+      let objForReturn = {Balance: updatedAcct.Balance, Amount: Math.abs(transactionForStorage.amount)};
+      console.log(objForReturn);
       res.json(objForReturn);
     });
   });
@@ -82,12 +80,12 @@ app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one rout
 
 //app.pos
 
-//The route below clears all saved search from the DB. Uncomment to enable. 
+//The route below clears all saved documents from the DB. Uncomment to enable. 
 //Note: this route is NOT connected to the Front End AT ALL. It can accessed through curl or the browser bar by appending '/wipe' tp whatever the base url is.
 
 app.get('/wipe', function(req, res, next) { 
   Account.remove({}, function(err) { 
-   console.log('account removed') 
+   console.log('account removed'); 
   });
 });
 

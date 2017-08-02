@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-//const findOrCreate = require('mongoose-findorcreate'); //third party NPM module to add find or create functionality to Mongoose
-const findOrCreate = require('mongoose-find-or-create'); //mtimofiiv
+const findOrCreate = require('mongoose-find-or-create'); //third party NPM module to add find or create functionality to Mongoose
 
 let AccountSchema = new mongoose.Schema({
   _id: Number,

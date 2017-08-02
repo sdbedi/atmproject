@@ -26,7 +26,6 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
     });
   };
   $scope.logout = function() {
-    console.log($scope.loginData ? 'logged in' : 'not logged in');
     $scope.PIN = 0; 
     $scope.loginData = false;
     $scope.bankrupt = false;
@@ -52,7 +51,7 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
       console.log("recieved deposit balance", results.data);
       $scope.statement = "You have deposited " + results.data.Amount + " dollars.";
       $scope.amount = results.data.Balance;
-      $scope.amount > 0 ? $scope.bankrupt = false : $scope.bankrupt = true;
+      $scope.bankrupt = $scope.amount <= 0 ? true : false;
       }, function(e) {
       alert("error", e);
     });
