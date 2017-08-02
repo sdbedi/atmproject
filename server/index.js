@@ -85,8 +85,12 @@ app.get('/login/:PIN', function(req, res, next) {
 
 
 app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one route to handles credits and withdrawals
-    let objForStorage = req.params;
-    console.log("params", req.params)
+  let objForStorage = req.params;
+  console.log("params", req.params)
+  if (objForStorage.type = "withdraw") {
+    objForStorage.amount * (-1)
+  }
+  console.log(objForStorage)
   //   Account.findOrCreate(objForStorage, function(err, acct, created) {
   //   // created will be true here
   //   console.log('A new account was inserted', acct);
@@ -97,11 +101,6 @@ app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one rout
   //     res.json(acct)
   //   })
   // });
-  Account.findOrCreate(objForStorage, (err, result) => {
-  // my new or existing model is loaded as result
-    console.log(result) 
-    res.json(result)
-  })
 });
 
 //app.pos

@@ -35,11 +35,26 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
   };
   $scope.logout = function() {
     console.log($scope.loginData ? 'logged in' : 'not logged in');
-      $scope.loginData = false;
+    $scope.PIN = 0; 
+    $scope.loginData = false;
   };
   $scope.withdraw = function(amt) {
     //make GET request for balance
     //subtract amt from balance
+
+    let withdrawURL = 'login/' + $scope.PIN + '/withdraw/' + amt
+    $http.get(withdrawURL).then(function(results) {
+      console.log("recieved balance", results.data);
+      console.log(typeof(results.data))
+      // $scope.jobResults = results.data;
+      // if ($scope.jobResults.length === 0) {
+      //   $scope.message = 'No jobs found. Please check your search terms and try again.';
+      // } else {
+      //   $scope.message = ''
+      // };
+    }, function(e) {
+      alert("error", e);
+    });
     if (amt > $scope.amount) { //move this logic server side
       $scope.statement = "WARNING: Overdraft for withdrawal of " + amt + " dollars. A 10 dollar conveience fee has been applied."
       $scope.amount = $scope.amount - amt - 10
@@ -51,6 +66,19 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
   $scope.deposit = function(amt) {
     //make GET request for balance
     //subtract amt from balance
+    let depositURL = 'login/' + $scope.PIN + '/deposit/' + amt
+    $http.get(depositURL).then(function(results) {
+      console.log("recieved balance", results.data);
+      console.log(typeof(results.data))
+      // $scope.jobResults = results.data;
+      // if ($scope.jobResults.length === 0) {
+      //   $scope.message = 'No jobs found. Please check your search terms and try again.';
+      // } else {
+      //   $scope.message = ''
+      // };
+    }, function(e) {
+      alert("error", e);
+    });
     $scope.statement = "You have deposited " + amt + " dollars."
     $scope.amount = $scope.amount + amt
   }
