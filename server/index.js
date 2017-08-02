@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
+//const findOrCreate = require('mongoose-findorcreate')
+const findOrCreate = require('mongoose-find-or-create'); //mtimofiiv
 module.exports = app;
 
 
@@ -11,6 +13,7 @@ require('../models/Accounts');
 mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/news');
 
 let Account = mongoose.model('Account');
+//console.log(Account.findOrCreate)
 
 [{PIN: 1234, Balance: 100}, {PIN: 4321}].forEach((entry)=>{var newAccount = new Account(entry);
 console.log("newAccount: ", newAccount)
@@ -35,7 +38,26 @@ app.get('/accounts', function(req, res, next) { //route for getting all accounts
   });
 });
 
-app.get('/login/:pin', function(req, res, next) {
+app.get('/findOrCreate', function(req, res, next) { //TODO: refactor for promise support
+  Account.findOrCreate({PIN: 1234}, function(err, click, created) {
+    // created will be true here
+    console.log('A new account was inserted', click);
+    Account.findOrCreate({}, function(err, click, created) {
+      // created will be false here
+      console.log('Did not create a new account', click);
+    })
+  });
+  Account.findOrCreate({PIN: 5678}, function(err, click, created) {
+    // created will be true here
+    console.log('A new account was inserted', click);
+    Account.findOrCreate({}, function(err, click, created) {
+      // created will be false here
+      console.log('Did not create a new account', click);
+    })
+  });
+});
+
+app.get('/login/:PIN', function(req, res, next) {
     // let search = new Account(req.params);
     // console.log("search", search);
     // search.save(function(err, search){
@@ -43,46 +65,54 @@ app.get('/login/:pin', function(req, res, next) {
     //   //res.json(search);
     // });
     let objForStorage = req.params;
-    objForStorage.balance = 10;
-    console.log(req.params)
-    res.json("hi")
+    console.log("params", req.params)
+  //   Account.findOrCreate(objForStorage, function(err, acct, created) {
+  //   // created will be true here
+  //   console.log('A new account was inserted', acct);
+  //   res.json(acct)
+  //   Account.findOrCreate({}, function(err, acct, created) {
+  //     // created will be false here
+  //     console.log('Did not create a new account', acct);
+  //     res.json(acct)
+  //   })
+  // });
+  Account.findOrCreate(objForStorage, (err, result) => {
+  // my new or existing model is loaded as result
+    console.log(result) 
+    res.json(result)
+  })
+});
+
+
+app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one route to handles credits and withdrawals
+    let objForStorage = req.params;
+    console.log("params", req.params)
+  //   Account.findOrCreate(objForStorage, function(err, acct, created) {
+  //   // created will be true here
+  //   console.log('A new account was inserted', acct);
+  //   res.json(acct)
+  //   Account.findOrCreate({}, function(err, acct, created) {
+  //     // created will be false here
+  //     console.log('Did not create a new account', acct);
+  //     res.json(acct)
+  //   })
+  // });
+  Account.findOrCreate(objForStorage, (err, result) => {
+  // my new or existing model is loaded as result
+    console.log(result) 
+    res.json(result)
+  })
 });
 
 //app.pos
 
-app.post('/repos/import', function (req, res) {
-  for (var key in req.body) {
-    var entry = req.body[key];
-      knex.raw('INSERT OR REPLACE INTO repos (username, reponame, stargazers, url) values ("' + entry.username + '", "' + entry.reponame + '", "' + entry.stargazers + '", "' + entry.url  + ' ");')
-         .then(function(response) {
-             console.log("This bloody worked!")
-             knex.select("*").from('repos').then(function(data) {console.log("Data successfully imported", data)})
-         })
-         .catch(function(err) {
-             console.log(err);
-         })
-  }
-  res.status(200);
-  res.send("Repos Recieved.")
-});
+//The route below clears all saved search from the DB. Uncomment to enable. 
+//Note: this route is NOT connected to the Front End AT ALL. It can accessed through curl or the browser bar by appending '/wipe' tp whatever the base url is.
 
-
-app.get('/repos', function (req, res) {
-  res.status(200);
-  res.type('html');
-
-  knex.select("*").from("repos").orderBy('stargazers', 'desc')
-      .then(function (data)  {
-        data = data.splice(0,25);
-        return data.map(function (repo) {
-          return `<ul>
-                <li><strong>Repository: </strong><a href="${repo.url}">"${repo.reponame}"</a></li>
-                <li><i>Username: </i>"${repo.username}"</li>
-                <li>Stargazers: "${repo.stargazers}"</li>
-              </ul>`
-        }).join('')
-      })
-      .then(function (data)  {res.send(data)})
+app.get('/wipe', function(req, res, next) { 
+  Account.remove({}, function(err) { 
+   console.log('account removed') 
+  });
 });
 
 

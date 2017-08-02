@@ -1,4 +1,4 @@
-# githubfetcher
+# ATM Project
 
 A simple toy JQuery application to fetch top repos from Github's search API. You can enter a username to fetch that user's repos, or you can fetch the top repos on Github overall. 
 

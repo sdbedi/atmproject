@@ -9,7 +9,7 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
     $scope.PIN = pin;
     console.log(typeof(pin), pin.length)
     if (pin.toString().length !== 4) {
-      alert("PIN must be exactly 4 numbers.")
+      alert("Your PIN must be exactly 4 numbers.")
       return
     }
     console.log(pin)
@@ -17,11 +17,12 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
     $scope.statement = ''
     console.log($scope.loginData  ? 'logged in' : 'not logged in');
     $scope.loginData = true;
-    $scope.amount = 10
 
     let pinURL = 'login/' + pin
     $http.get(pinURL).then(function(results) {
       console.log("recieved balance", results.data);
+      console.log(typeof(results.data.Balance))
+      $scope.amount = results.data.Balance;
       // $scope.jobResults = results.data;
       // if ($scope.jobResults.length === 0) {
       //   $scope.message = 'No jobs found. Please check your search terms and try again.';
@@ -39,7 +40,7 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
   $scope.withdraw = function(amt) {
     //make GET request for balance
     //subtract amt from balance
-    if (amt > $scope.amount) {
+    if (amt > $scope.amount) { //move this logic server side
       $scope.statement = "WARNING: Overdraft for withdrawal of " + amt + " dollars. A 10 dollar conveience fee has been applied."
       $scope.amount = $scope.amount - amt - 10
     } else {
