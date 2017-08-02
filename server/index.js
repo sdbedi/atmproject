@@ -5,7 +5,7 @@ const app = express();
 module.exports = app;
 
 const mongoose = require('mongoose');
-require('../models/Accounts');
+require('../Models/Accounts');
 
 mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/news');
 
