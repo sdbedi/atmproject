@@ -11,25 +11,8 @@ mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/news');
 
 let Account = mongoose.model('Account');
 
-Account.remove({}, function(err) {  //wipe DB on startup
-   console.log('account removed on startup'); 
-});
-
-[{_id: 1234, Balance: 100}, {_id: 4321}].forEach((entry)=>{var newAccount = new Account(entry); //pre load some dummy data
-console.log("newAccount: ", newAccount);
-  newAccount.save(function (err, entry) {
-    if (err) {
-      return console.error(err);
-    } else {
-      console.log(entry);
-    }
-  });
-})
-
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-
 app.use(express.static('client'));
 
 app.get('/accounts', function(req, res, next) { //route for getting all accounts - not linked to frontend, but can be accessed via cUrl
@@ -41,17 +24,17 @@ app.get('/accounts', function(req, res, next) { //route for getting all accounts
   });
 });
 
-app.get('/login/:_id', function(req, res, next) {
+app.get('/login/:_id', function(req, res, next) { //login route - fetches acct balance by PIN
+  console.log("recieved PIN: ", req.params)
   let acctForStorage = req.params;
-  console.log("params", req.params);
   Account.findOrCreate(acctForStorage, (err, result) => {
     console.log("result: ", result); 
     res.json(result);
   })
 });
 
-app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one route to handles credits and withdrawals
-  console.log("transaction params", req.params);
+app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one route to handles credits and withdrawals - a withdrawal is basically a negative deposit
+  console.log("recieved transaction request: ", req.params);
   let transactionForStorage = req.params;
   transactionForStorage.amount = Number(transactionForStorage.amount);
   if (transactionForStorage.type === "withdraw") {
@@ -83,11 +66,11 @@ app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one rout
 //The route below clears all saved documents from the DB. Uncomment to enable. 
 //Note: this route is NOT connected to the Front End AT ALL. It can accessed through curl or the browser bar by appending '/wipe' tp whatever the base url is.
 
-app.get('/wipe', function(req, res, next) { 
-  Account.remove({}, function(err) { 
-   console.log('account removed'); 
-  });
-});
+// app.get('/wipe', function(req, res, next) { 
+//   Account.remove({}, function(err) { 
+//    console.log('account removed'); 
+//   });
+// });
 
 
 app.get('/', function (req, res) {

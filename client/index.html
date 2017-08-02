@@ -10,11 +10,13 @@
     <div class="row">
         
       <div class="col-md-6 col-md-offset-3"> 
+        
         <div class="page-header">
           <h1>Angular First National Bank - My Account.</h1>
             <p>Welcome to our online account management system.</p>
         </div>
-        <div ng-App="myApp" ng-controller="LoginCheckCtrl" style="font-size:20px; margin-left:10px;">
+
+        <div ng-App="myApp" ng-controller="LoginCheckCtrl" style="font-size:20px; margin-left:10px;"> <!--Main application starts here. -->
           <div class="splash" ng-cloak>
             <div ng-switch on="loginData"> 
               <div ng-switch-when="false">
@@ -43,7 +45,9 @@
             </div>
           </div>
         </div>
+
       </div>
+
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
