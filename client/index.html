@@ -3,47 +3,49 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>repl.it</title>
-    <link href="index.css" rel="stylesheet" type="text/css" />
-
+    <title>Angular First National Bank.</title>
   </head>
   <body>
-    <div ng-App="myApp" ng-controller="LoginCheckCtrl">
-      <div ng-switch on="loginData"> 
-        <div ng-switch-when="false">
-        <form novalidate class="simple-form" ng-submit="login(PIN)">
-          <div class="form-group">
-            <h2>Please enter your 4-digit PIN to retrieve your account. If we can't find that PIN, we will create an account for you (with ten bucks on us!).</h2>
-            <input type="number" class="form-control" placeholder="Please enter your Pin" ng-model="PIN" />
-          </div>
-          <button type="submit" class="btn btn-primary">Submit PIN</button>
-        </form>
+    <div class="row">
+        
+      <div class="col-md-6 col-md-offset-3"> 
+        <div class="page-header">
+          <h1>Angular First National Bank - My Account.</h1>
+            <p>Welcome to our online account management system.</p>
         </div>
-        <div ng-switch-when="true">
-          <h2>Please enter how much you would like to deposit or withdraw. Note that any overdrafts will be subject to a 10 dollar convenience fee.</h2>
-          Your PIN is {{PIN}}. <br />
-          {{statement}} <br />
-          Your balance is: {{amount}} dollars.
-          <form novalidate class="simple-form">
-            <div class="form-group">
-              <input type="number" class="form-control" placeholder="Please enter an amount" ng-model="inputAmt" />
+        <div ng-App="myApp" ng-controller="LoginCheckCtrl" style="font-size:20px; margin-left:10px;">
+          <div ng-switch on="loginData"> 
+            <div ng-switch-when="false">
+            <form novalidate class="simple-form" ng-submit="login(PIN)">
+              <div class="form-group">
+                <h2>Please enter your 4-digit PIN to retrieve your account. If we can't find that PIN, we'll create an account for you, with ten bucks on us.</h2>
+                <input type="number" class="form-control" placeholder="Please enter your Pin" ng-model="PIN" />
+              </div>
+              <button type="submit" class="btn btn-primary">Submit PIN</button>
+            </form>
             </div>
-          <button class="btn btn-primary" ng-click="withdraw(inputAmt)">Withdraw</button>
-          <button class="btn btn-primary" ng-click="deposit(inputAmt)">Deposit</button>
-        </form>
-          <button class="btn btn-primary" ng-click="logout()">Logout</button></div>
+            <div ng-switch-when="true">
+              <h2>Please enter how much you would like to deposit or withdraw, or Logout to exit this menu.</h2>
+              <p>Note: If you attempt to withdraw more money than is in your account, we'll give you your entire remaining balance, but you won't be able to make any further withdrawals until you have deposited some more money.</p>
+              Your PIN is {{PIN}}. <br />
+              {{statement}} <br />
+              Your balance is: {{amount}} dollars.
+              <form novalidate class="simple-form">
+                <div class="form-group">
+                  <input type="number" class="form-control" placeholder="Please enter an amount" ng-model="inputAmt" />
+                </div>
+              <button class="btn btn-primary" ng-click="withdraw(inputAmt)" ng-disabled="bankrupt">Withdraw</button>
+              <button class="btn btn-primary" ng-click="deposit(inputAmt)">Deposit</button>
+            </form>
+              <button class="btn btn-primary" ng-click="logout()">Logout</button></div>
+          </div>
+        </div>
       </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-    <script type="text/javascript" src="numpad.js"></script>
     <script src="angularApp.js"></script>
-    <script type="text/javascript">
-      // Initialize the numpad
-      // $('.form-control').numpad({
-      //   displayTpl: '<input data-theme="b" type="password">'   
-      // });
     </script>
   </body>
 </html>

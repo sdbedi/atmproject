@@ -42,25 +42,6 @@ app.get('/accounts', function(req, res, next) { //route for getting all accounts
   });
 });
 
-// app.get('/findOrCreate', function(req, res, next) { //TODO: refactor for promise support
-//   Account.findOrCreate({PIN: 1234}, function(err, click, created) {
-//     // created will be true here
-//     console.log('A new account was inserted', click);
-//     Account.findOrCreate({}, function(err, click, created) {
-//       // created will be false here
-//       console.log('Did not create a new account', click);
-//     })
-//   });
-//   Account.findOrCreate({PIN: 5678}, function(err, click, created) {
-//     // created will be true here
-//     console.log('A new account was inserted', click);
-//     Account.findOrCreate({}, function(err, click, created) {
-//       // created will be false here
-//       console.log('Did not create a new account', click);
-//     })
-//   });
-// });
-
 app.get('/login/:_id', function(req, res, next) {
     let acctForStorage = req.params;
     console.log("params", req.params)
@@ -70,7 +51,6 @@ app.get('/login/:_id', function(req, res, next) {
     res.json(result)
   })
 });
-
 
 app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one route to handles credits and withdrawals
   console.log("transaction params", req.params)
@@ -93,12 +73,11 @@ app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one rout
       if (err) {console.log(err)};
 
       console.log("updated acct: ", updatedAcct)
-      let objForReturn = {Balance: updatedAcct.Balance, Amount: transactionForStorage.amount}
+      let objForReturn = {Balance: updatedAcct.Balance, Amount: Math.abs(transactionForStorage.amount)}
       console.log(objForReturn)
       res.json(objForReturn);
     });
-});
-  // res.json(transactionForStorage)
+  });
 });
 
 //app.pos
