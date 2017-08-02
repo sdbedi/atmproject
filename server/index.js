@@ -73,8 +73,9 @@ app.get('/login/:_id', function(req, res, next) {
 
 
 app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one route to handles credits and withdrawals
-  let transactionForStorage = req.params;
   console.log("transaction params", req.params)
+  let transactionForStorage = req.params;
+  transactionForStorage.amount = Number(transactionForStorage.amount)
   if (transactionForStorage.type === "withdraw") {
     transactionForStorage.amount = transactionForStorage.amount * (-1)
   }
@@ -82,11 +83,11 @@ app.get('/transaction/:PIN/:type/:amount', function(req, res, next) { //one rout
   Account.findById({_id: req.params.PIN}, function (err, acct) {
     if (err) {console.log(err)};
   
-    if (acct.Balance + transactionForStorage.amount === 0) {
+    if (acct.Balance + transactionForStorage.amount <= 0) { //wont let the acct go into negative balance. 
       transactionForStorage.amount = acct.Balance;
       acct.Balance = 0;
     } else {
-      acct.Balance += Number(transactionForStorage.amount);
+      acct.Balance += transactionForStorage.amount;
     }
     acct.save(function (err, updatedAcct) {
       if (err) {console.log(err)};
