@@ -39,12 +39,9 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
     $scope.loginData = false;
   };
   $scope.withdraw = function(amt) {
-    //make GET request for balance
-    //subtract amt from balance
-
-    let withdrawURL = 'login/' + $scope.PIN + '/withdraw/' + amt
+    let withdrawURL = 'transaction/' + $scope.PIN + '/withdraw/' + amt
     $http.get(withdrawURL).then(function(results) {
-      console.log("recieved balance", results.data);
+      console.log("recieved withdrawal balance", results.data);
       console.log(typeof(results.data))
       // $scope.jobResults = results.data;
       // if ($scope.jobResults.length === 0) {
@@ -64,11 +61,9 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
     }
   }
   $scope.deposit = function(amt) {
-    //make GET request for balance
-    //subtract amt from balance
-    let depositURL = 'login/' + $scope.PIN + '/deposit/' + amt
+    let depositURL = 'transaction/' + $scope.PIN + '/deposit/' + amt
     $http.get(depositURL).then(function(results) {
-      console.log("recieved balance", results.data);
+      console.log("recieved deposit balance", results.data);
       console.log(typeof(results.data))
       // $scope.jobResults = results.data;
       // if ($scope.jobResults.length === 0) {

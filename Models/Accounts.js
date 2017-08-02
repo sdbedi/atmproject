@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const findOrCreate = require('mongoose-find-or-create'); //mtimofiiv
 
 let AccountSchema = new mongoose.Schema({
-  PIN: Number,
+  _id: Number,
   Balance: {type: Number, default: 10}
 });
 
