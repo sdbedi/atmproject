@@ -4,7 +4,7 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
   $scope.loginData = false;
   $scope.login = function(pin) {
     $scope.PIN = pin;
-    if (pin.toString().length !== 4) {
+    if (pin === undefined || pin.toString().length !== 4) {
       alert("Your PIN must be exactly 4 numbers.");
       return;
     }
