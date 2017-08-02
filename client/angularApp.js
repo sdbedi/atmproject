@@ -31,6 +31,10 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
     $scope.bankrupt = false;
   };
   $scope.withdraw = function(amt) {
+    if (amt === undefined || amt <= 0) {
+      alert("Please enter an amount greater than 0.");
+      return;
+    };
     let withdrawURL = 'transaction/' + $scope.PIN + '/withdraw/' + amt;
     $http.get(withdrawURL).then(function(results) {
       console.log("recieved withdrawal balance", results.data);
@@ -46,12 +50,18 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
     });
   };
   $scope.deposit = function(amt) {
+    if (amt === undefined || amt <= 0) {
+      alert("Please enter an amount greater than 0.");
+      return;
+    };
     let depositURL = 'transaction/' + $scope.PIN + '/deposit/' + amt;
     $http.get(depositURL).then(function(results) {
       console.log("recieved deposit balance", results.data);
       $scope.statement = "You have deposited " + results.data.Amount + " dollars.";
       $scope.amount = results.data.Balance;
       $scope.bankrupt = $scope.amount <= 0 ? true : false;
+      amt = 0;
+      return amt;
       }, function(e) {
       alert("error", e);
     });
