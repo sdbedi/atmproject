@@ -1,6 +1,6 @@
 # ATM Project
 
-A simple ATM application powered by the MEAN stack (Mongo/Mongoose, Express, Angular, Node)
+An ATM application powered by the MEAN stack (Mongo/Mongoose, Express, Angular, Node)
 You can fetch an account by PIN number; if that account exists, it will be fetched. If not, the app creates one with 10 dollars in starter money. This application comes loaded with two starter accounts: PIN 1234 with a balance of 100 dollars, and PIN 4321 with a balance of 10 dollars.
 
 Once logged in, you can deposit or withdraw cash. You can't take out more money than is in your account; if you try, you'll recieve your entire remaining balance, your account balance will hit 0, and you will not be able to withdraw any more cash.
