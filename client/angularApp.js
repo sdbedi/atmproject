@@ -15,7 +15,6 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
 
     let pinURL = 'login/' + pin;
     $http.get(pinURL).then(function(results) {
-      console.log("recieved balance", results.data);
       $scope.amount = results.data.Balance;
       if ($scope.amount === 0) {
       	$scope.statement = "You're broke! You can't make any withdrawals until you deposit more money.";
@@ -37,7 +36,6 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
     };
     let withdrawURL = 'transaction/' + $scope.PIN + '/withdraw/' + amt;
     $http.get(withdrawURL).then(function(results) {
-      console.log("recieved withdrawal balance", results.data);
       if (results.data.Balance <= 0) {
       	$scope.statement = "You're broke! We've given you your remaining balance of " + results.data.Amount + " dollars, but you can't make any more withdrawals until you deposit more money.";	
       	$scope.bankrupt = true;
@@ -56,7 +54,6 @@ app.controller('LoginCheckCtrl', ['$scope', '$http', function($scope, $http){
     };
     let depositURL = 'transaction/' + $scope.PIN + '/deposit/' + amt;
     $http.get(depositURL).then(function(results) {
-      console.log("recieved deposit balance", results.data);
       $scope.statement = "You have deposited " + results.data.Amount + " dollars.";
       $scope.amount = results.data.Balance;
       $scope.bankrupt = $scope.amount <= 0 ? true : false;
